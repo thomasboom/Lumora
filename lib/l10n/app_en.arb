@@ -16,5 +16,11 @@
   "saveEntry": "Save",
   "historyTitle": "History",
   "delete": "Delete",
-  "noEntries": "No entries yet"
+  "noEntries": "No entries yet",
+  "symptomsTitle": "Did you experience any symptoms?",
+  "symptomsHint": "Select symptoms...",
+  "next": "Next",
+  "back": "Back",
+  "newActivity": "New activity",
+  "selectActivities": "Select activities"
 }

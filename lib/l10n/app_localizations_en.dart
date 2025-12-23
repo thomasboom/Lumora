@@ -58,4 +58,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noEntries => 'No entries yet';
+
+  @override
+  String get symptomsTitle => 'Did you experience any symptoms?';
+
+  @override
+  String get symptomsHint => 'Select symptoms...';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get newActivity => 'New activity';
+
+  @override
+  String get selectActivities => 'Select activities';
 }

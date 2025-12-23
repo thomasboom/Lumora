@@ -16,5 +16,11 @@
   "saveEntry": "Opslaan",
   "historyTitle": "Geschiedenis",
   "delete": "Verwijderen",
-  "noEntries": "Nog geen vermeldingen"
+  "noEntries": "Nog geen vermeldingen",
+  "symptomsTitle": "Heb je symptomen ervaren?",
+  "symptomsHint": "Selecteer symptomen...",
+  "next": "Volgende",
+  "back": "Terug",
+  "newActivity": "Nieuwe activiteit",
+  "selectActivities": "Selecteer activiteiten"
 }

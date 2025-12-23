@@ -196,6 +196,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No entries yet'**
   String get noEntries;
+
+  /// No description provided for @symptomsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Did you experience any symptoms?'**
+  String get symptomsTitle;
+
+  /// No description provided for @symptomsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select symptoms...'**
+  String get symptomsHint;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @newActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'New activity'**
+  String get newActivity;
+
+  /// No description provided for @selectActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'Select activities'**
+  String get selectActivities;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

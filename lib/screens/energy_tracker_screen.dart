@@ -18,6 +18,8 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
   final TextEditingController _activityController = TextEditingController();
   bool _isLoading = true;
   bool _showHistory = false;
+  int _currentStep = 0;
+  final List<String> _selectedSymptoms = [];
 
   final List<IconData> _energyIcons = [
     Icons.battery_alert,
@@ -28,11 +30,24 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
   ];
 
   final List<Color> _energyColors = [
-    Colors.red[400]!,
-    Colors.orange[400]!,
-    Colors.yellow[400]!,
-    Colors.lightGreen[400]!,
-    Colors.green[400]!,
+    const Color(0xFFF87171),
+    const Color(0xFFFB923C),
+    const Color(0xFFFACC15),
+    const Color(0xFF86EFAC),
+    const Color(0xFF4ADE80),
+  ];
+
+  final List<String> _symptoms = [
+    'fatigue',
+    'brain fog',
+    'dizziness',
+    'pain',
+    'headache',
+    'nausea',
+    'shortness of breath',
+    'chest pain',
+    'muscle weakness',
+    'joint pain',
   ];
 
   @override
@@ -59,6 +74,7 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
       date: DateTime.now(),
       energyLevel: _selectedEnergyLevel!,
       activities: List.from(_activities),
+      symptoms: List.from(_selectedSymptoms),
     );
 
     await _storageService.saveEntry(entry);
@@ -69,6 +85,8 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
         _selectedEnergyLevel = null;
         _activities.clear();
         _activityController.clear();
+        _selectedSymptoms.clear();
+        _currentStep = 0;
         _showHistory = true;
       });
     }
@@ -90,6 +108,16 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
     });
   }
 
+  void _toggleSymptom(String symptom) {
+    setState(() {
+      if (_selectedSymptoms.contains(symptom)) {
+        _selectedSymptoms.remove(symptom);
+      } else {
+        _selectedSymptoms.add(symptom);
+      }
+    });
+  }
+
   Future<void> _deleteEntry(String id) async {
     await _storageService.deleteEntry(id);
     await _loadEntries();
@@ -100,8 +128,414 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
       _selectedEnergyLevel = null;
       _activities.clear();
       _activityController.clear();
+      _selectedSymptoms.clear();
+      _currentStep = 0;
       _showHistory = false;
     });
+  }
+
+  List<String> _getUniqueActivities() {
+    final Set<String> uniqueActivities = {};
+    for (final entry in _entries) {
+      for (final activity in entry.activities) {
+        uniqueActivities.add(activity);
+      }
+    }
+    return uniqueActivities.toList()..sort();
+  }
+
+  String _getStepTitle(int step) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (step) {
+      case 0:
+        return l10n.energyTitle;
+      case 1:
+        return l10n.activitiesTitle;
+      case 2:
+        return l10n.symptomsTitle;
+      default:
+        return '';
+    }
+  }
+
+  Widget _buildStepContent(AppLocalizations l10n) {
+    switch (_currentStep) {
+      case 0:
+        return _buildEnergyStep(l10n);
+      case 1:
+        return _buildActivitiesStep(l10n);
+      case 2:
+        return _buildSymptomsStep(l10n);
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
+  Widget _buildEnergyStep(AppLocalizations l10n) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.energyTitle,
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              color: Colors.grey[100],
+              fontWeight: FontWeight.w600,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 32),
+          ...List.generate(5, (index) {
+            final level = index + 1;
+            final isSelected = _selectedEnergyLevel == level;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedEnergyLevel = level;
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? _energyColors[index].withValues(alpha: 0.2)
+                        : const Color(0xFF1F2937),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isSelected
+                          ? _energyColors[index]
+                          : Colors.grey[800]!,
+                      width: isSelected ? 2 : 1,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        _energyIcons[index],
+                        color: _energyColors[index],
+                        size: 32,
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(
+                          _getEnergyLabel(level),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                color: Colors.grey[100],
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                              ),
+                        ),
+                      ),
+                      if (isSelected)
+                        Icon(
+                          Icons.check_circle,
+                          color: _energyColors[index],
+                          size: 24,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActivitiesStep(AppLocalizations l10n) {
+    final uniqueActivities = _getUniqueActivities();
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.activitiesTitle,
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(color: Colors.grey[300]),
+          ),
+          const SizedBox(height: 12),
+          if (uniqueActivities.isNotEmpty) ...[
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: uniqueActivities.map((activity) {
+                final isSelected = _activities.contains(activity);
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (isSelected) {
+                        _activities.remove(activity);
+                      } else {
+                        _activities.add(activity);
+                      }
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? const Color(0xFF374151)
+                          : const Color(0xFF1F2937),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: isSelected
+                            ? Colors.blue[400]!
+                            : Colors.grey[700]!,
+                      ),
+                    ),
+                    child: Text(
+                      activity,
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 16),
+          ],
+          Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFF1F2937),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey[800]!),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _activityController,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      hintText: l10n.newActivity,
+                      hintStyle: TextStyle(color: Colors.grey[500]),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 16,
+                      ),
+                    ),
+                    onSubmitted: (_) => _addActivity(),
+                  ),
+                ),
+                Container(height: 48, width: 1, color: Colors.grey[800]),
+                IconButton(
+                  onPressed: _addActivity,
+                  icon: Icon(
+                    Icons.add_circle,
+                    color: Colors.grey[400],
+                    size: 28,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (_activities.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Text(
+              l10n.selectActivities,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey[400]),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: List.generate(_activities.length, (index) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF374151),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.blue[400]!),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        _activities[index],
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: () => _removeActivity(index),
+                        child: Icon(
+                          Icons.close,
+                          size: 16,
+                          color: Colors.grey[400],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSymptomsStep(AppLocalizations l10n) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.symptomsTitle,
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(color: Colors.grey[300]),
+          ),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: _symptoms.map((symptom) {
+              final isSelected = _selectedSymptoms.contains(symptom);
+              return GestureDetector(
+                onTap: () => _toggleSymptom(symptom),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? Colors.red.withValues(alpha: 0.2)
+                        : const Color(0xFF1F2937),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: isSelected ? Colors.red[400]! : Colors.grey[700]!,
+                      width: isSelected ? 2 : 1,
+                    ),
+                  ),
+                  child: Text(
+                    symptom,
+                    style: TextStyle(
+                      color: isSelected ? Colors.red[300] : Colors.grey[300],
+                      fontSize: 14,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.normal,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+          if (_selectedSymptoms.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            Text(
+              '${_selectedSymptoms.length} ${l10n.symptomsHint}',
+              style: TextStyle(color: Colors.grey[400], fontSize: 14),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNavigationButtons(AppLocalizations l10n) {
+    return Container(
+      padding: const EdgeInsets.all(24.0),
+      decoration: BoxDecoration(
+        color: const Color(0xFF111827),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.5),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        top: false,
+        child: Row(
+          children: [
+            if (_currentStep > 0)
+              Expanded(
+                child: SizedBox(
+                  height: 56,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      setState(() {
+                        _currentStep--;
+                      });
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: Colors.grey[700]!),
+                    ),
+                    child: Text(l10n.back),
+                  ),
+                ),
+              ),
+            if (_currentStep > 0) const SizedBox(width: 16),
+            Expanded(
+              child: SizedBox(
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: _canProceed() ? _handleNext : null,
+                  style: ElevatedButton.styleFrom(
+                    disabledBackgroundColor: Colors.grey[800],
+                    disabledForegroundColor: Colors.grey[600],
+                  ),
+                  child: Text(
+                    _currentStep == 2 ? l10n.saveEntry : l10n.next,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  bool _canProceed() {
+    switch (_currentStep) {
+      case 0:
+        return _selectedEnergyLevel != null;
+      case 1:
+        return true;
+      case 2:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  void _handleNext() {
+    if (_currentStep < 2) {
+      setState(() {
+        _currentStep++;
+      });
+    } else {
+      _saveEntry();
+    }
   }
 
   String _getEnergyLabel(int level) {
@@ -131,197 +565,42 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
     if (!_showHistory) {
       return Scaffold(
         backgroundColor: const Color(0xFF111827),
+        appBar: AppBar(
+          title: Text(
+            _getStepTitle(_currentStep),
+            style: const TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.white),
+          leading: _currentStep > 0
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    setState(() {
+                      _currentStep--;
+                    });
+                  },
+                )
+              : null,
+        ),
         body: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  l10n.energyTitle,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: Colors.grey[100],
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.center,
+          child: Column(
+            children: [
+              LinearProgressIndicator(
+                value: (_currentStep + 1) / 3,
+                backgroundColor: Colors.grey.shade800,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  _selectedEnergyLevel != null &&
+                          _selectedEnergyLevel! > 0 &&
+                          _selectedEnergyLevel! <= _energyColors.length
+                      ? _energyColors[_selectedEnergyLevel! - 1]
+                      : Colors.grey.shade600,
                 ),
-                const SizedBox(height: 32),
-                ...List.generate(5, (index) {
-                  final level = index + 1;
-                  final isSelected = _selectedEnergyLevel == level;
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedEnergyLevel = level;
-                        });
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? _energyColors[index].withValues(alpha: 0.2)
-                              : const Color(0xFF1F2937),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: isSelected
-                                ? _energyColors[index]
-                                : Colors.grey[800]!,
-                            width: isSelected ? 2 : 1,
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              _energyIcons[index],
-                              color: _energyColors[index],
-                              size: 32,
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Text(
-                                _getEnergyLabel(level),
-                                style: Theme.of(context).textTheme.titleMedium
-                                    ?.copyWith(
-                                      color: Colors.grey[100],
-                                      fontWeight: isSelected
-                                          ? FontWeight.w600
-                                          : FontWeight.normal,
-                                    ),
-                              ),
-                            ),
-                            if (isSelected)
-                              Icon(
-                                Icons.check_circle,
-                                color: _energyColors[index],
-                                size: 24,
-                              ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-                const SizedBox(height: 24),
-                Text(
-                  l10n.activitiesTitle,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleMedium?.copyWith(color: Colors.grey[300]),
-                ),
-                const SizedBox(height: 12),
-                Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1F2937),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey[800]!),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _activityController,
-                          style: const TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
-                            hintText: l10n.activityHint,
-                            hintStyle: TextStyle(color: Colors.grey[500]),
-                            border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 16,
-                            ),
-                          ),
-                          onSubmitted: (_) => _addActivity(),
-                        ),
-                      ),
-                      Container(height: 48, width: 1, color: Colors.grey[800]),
-                      IconButton(
-                        onPressed: _addActivity,
-                        icon: Icon(
-                          Icons.add_circle,
-                          color: Colors.grey[400],
-                          size: 28,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                if (_activities.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: List.generate(_activities.length, (index) {
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF374151),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey[700]!),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              _activities[index],
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            GestureDetector(
-                              onTap: () => _removeActivity(index),
-                              child: Icon(
-                                Icons.close,
-                                size: 16,
-                                color: Colors.grey[400],
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
-                  ),
-                ],
-                const SizedBox(height: 24),
-                SizedBox(
-                  height: 56,
-                  child: ElevatedButton(
-                    onPressed: _selectedEnergyLevel != null ? _saveEntry : null,
-                    style: ElevatedButton.styleFrom(
-                      disabledBackgroundColor: Colors.grey[800],
-                      disabledForegroundColor: Colors.grey[600],
-                    ),
-                    child: Text(
-                      l10n.saveEntry,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-                if (_entries.isNotEmpty) ...[
-                  const SizedBox(height: 16),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _showHistory = true;
-                      });
-                    },
-                    child: Text(
-                      l10n.historyTitle,
-                      style: TextStyle(color: Colors.grey[400]),
-                    ),
-                  ),
-                ],
-              ],
-            ),
+              ),
+              Expanded(child: _buildStepContent(l10n)),
+              _buildNavigationButtons(l10n),
+            ],
           ),
         ),
       );
@@ -415,6 +694,39 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
                                 ],
                               ),
                             ),
+                          ),
+                        ],
+                        if (entry.symptoms.isNotEmpty) ...[
+                          const SizedBox(height: 8),
+                          Wrap(
+                            spacing: 6,
+                            runSpacing: 6,
+                            children: entry.symptoms
+                                .map(
+                                  (symptom) => Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red.withValues(alpha: 0.2),
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(
+                                        color: Colors.red.withValues(
+                                          alpha: 0.5,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      symptom,
+                                      style: TextStyle(
+                                        color: Colors.red[300],
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
                           ),
                         ],
                         const SizedBox(height: 12),
