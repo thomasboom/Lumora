@@ -1,0 +1,20 @@
+{
+  "@@locale": "nl",
+  "appTitle": "Lumora",
+  "disclaimerTitle": "Belangrijk",
+  "disclaimerText": "Er is geen enkele manier om Long Covid te genezen. Houd jezelf in de gaten en vertrouw niet alleen op technologie.",
+  "disclaimerButton": "Oké, ik begrijp het",
+  "energyTitle": "Hoe voel je je?",
+  "energyLevel1": "Heel moe",
+  "energyLevel2": "Moe",
+  "energyLevel3": "Oké",
+  "energyLevel4": "Goed",
+  "energyLevel5": "Geweldig",
+  "activitiesTitle": "Wat heb je gedaan?",
+  "activityHint": "Typ iets wat je hebt gedaan...",
+  "addActivity": "Toevoegen",
+  "saveEntry": "Opslaan",
+  "historyTitle": "Geschiedenis",
+  "delete": "Verwijderen",
+  "noEntries": "Nog geen vermeldingen"
+}

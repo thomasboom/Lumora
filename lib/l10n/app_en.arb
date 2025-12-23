@@ -1,0 +1,20 @@
+{
+  "@@locale": "en",
+  "appTitle": "Lumora",
+  "disclaimerTitle": "Important",
+  "disclaimerText": "There's no one way to cure Long Covid. Keep an eye on yourself and don't just rely on technology.",
+  "disclaimerButton": "Alright, I understand",
+  "energyTitle": "How are you feeling?",
+  "energyLevel1": "Very tired",
+  "energyLevel2": "Tired",
+  "energyLevel3": "Okay",
+  "energyLevel4": "Good",
+  "energyLevel5": "Great",
+  "activitiesTitle": "What did you do?",
+  "activityHint": "Type something you did...",
+  "addActivity": "Add",
+  "saveEntry": "Save",
+  "historyTitle": "History",
+  "delete": "Delete",
+  "noEntries": "No entries yet"
+}
