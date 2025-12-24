@@ -15,7 +15,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get disclaimerTitle => 'Hé, laten we even praten';
 
   @override
-  String get disclaimerText => 'Er is geen enkel middel tegen Long Covid. Luister goed naar je lichaam en vertrouw niet alleen op technologie, oké?';
+  String get disclaimerText => 'Er is geen enkel middel tegen Long Covid. Deze app is alleen voor informatieve doeleinden en wij aanvaarden geen verantwoordelijkheid voor het gebruik ervan. Raadpleeg altijd een zorgprofessional voor medisch advies. Luister goed naar je lichaam en vertrouw niet alleen op technologie.';
 
   @override
   String get disclaimerButton => 'Begrepen, ik snap het';

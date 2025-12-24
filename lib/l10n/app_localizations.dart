@@ -110,7 +110,7 @@ abstract class AppLocalizations {
   /// No description provided for @disclaimerText.
   ///
   /// In en, this message translates to:
-  /// **'There\'s no single cure for Long Covid. Keep listening to your body and don\'t just rely on technology, okay?'**
+  /// **'There\'s no single cure for Long Covid. This app is for informational purposes only and we take no responsibility for its use. Always consult a healthcare professional for medical advice. Keep listening to your body and don\'t just rely on technology.'**
   String get disclaimerText;
 
   /// No description provided for @disclaimerButton.

@@ -15,7 +15,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get disclaimerTitle => 'Hey there, let\'s talk';
 
   @override
-  String get disclaimerText => 'There\'s no single cure for Long Covid. Keep listening to your body and don\'t just rely on technology, okay?';
+  String get disclaimerText => 'There\'s no single cure for Long Covid. This app is for informational purposes only and we take no responsibility for its use. Always consult a healthcare professional for medical advice. Keep listening to your body and don\'t just rely on technology.';
 
   @override
   String get disclaimerButton => 'Got it, I understand';
