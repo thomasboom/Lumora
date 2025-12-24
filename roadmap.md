@@ -10,11 +10,6 @@
 - Link symptoms back to previous activities
 - Identify trigger activities
 
-**3. Symptom Severity**
-- Add intensity slider (1-10) for each symptom
-- Track duration of symptoms
-- Better visualize symptom patterns
-
 **4. Personalized Insights**
 - "What worked this week?" summaries
 - Trigger detection (e.g., "Exercise often causes brain fog 24h later")
