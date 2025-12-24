@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:lumora/l10n/app_localizations.dart';
 import '../models/energy_entry.dart';
 import '../services/storage_service.dart';
@@ -631,123 +632,20 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
                 ],
               ),
             )
-          : ListView.builder(
+          : SingleChildScrollView(
               padding: const EdgeInsets.all(16),
-              itemCount: _entries.length,
-              itemBuilder: (context, index) {
-                final entry = _entries[index];
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  _energyIcons[entry.energyLevel - 1],
-                                  color: _energyColors[entry.energyLevel - 1],
-                                  size: 24,
-                                ),
-                                const SizedBox(width: 12),
-                                Text(
-                                  _getEnergyLabel(entry.energyLevel),
-                                  style: Theme.of(context).textTheme.titleMedium
-                                      ?.copyWith(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              _formatDate(entry.date),
-                              style: TextStyle(
-                                color: Colors.grey[400],
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
-                        ),
-                        if (entry.activities.isNotEmpty) ...[
-                          const SizedBox(height: 12),
-                          ...entry.activities.map(
-                            (activity) => Padding(
-                              padding: const EdgeInsets.only(bottom: 4.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '• ',
-                                    style: TextStyle(color: Colors.grey[300]),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      activity,
-                                      style: TextStyle(color: Colors.grey[300]),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                        if (entry.symptoms.isNotEmpty) ...[
-                          const SizedBox(height: 8),
-                          Wrap(
-                            spacing: 6,
-                            runSpacing: 6,
-                            children: entry.symptoms
-                                .map(
-                                  (symptom) => Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.red.withValues(alpha: 0.2),
-                                      borderRadius: BorderRadius.circular(6),
-                                      border: Border.all(
-                                        color: Colors.red.withValues(
-                                          alpha: 0.5,
-                                        ),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      symptom,
-                                      style: TextStyle(
-                                        color: Colors.red[300],
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                          ),
-                        ],
-                        const SizedBox(height: 12),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton.icon(
-                              onPressed: () => _deleteEntry(entry.id),
-                              icon: const Icon(Icons.delete_outline, size: 18),
-                              label: Text(l10n.delete),
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.grey[400],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildEnergyLevelChart(),
+                  const SizedBox(height: 24),
+                  _buildSymptomsChart(),
+                  const SizedBox(height: 24),
+                  _buildActivitiesChart(),
+                  const SizedBox(height: 24),
+                  _buildEntriesList(l10n),
+                ],
+              ),
             ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _showNewEntry,
@@ -776,6 +674,537 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
     final hour = date.hour.toString().padLeft(2, '0');
     final minute = date.minute.toString().padLeft(2, '0');
     return '$hour:$minute';
+  }
+
+  Widget _buildEnergyLevelChart() {
+    final sortedEntries = List<EnergyEntry>.from(_entries)
+      ..sort((a, b) => a.date.compareTo(b.date));
+
+    final last7Days = sortedEntries.take(7).toList();
+
+    return Card(
+      color: const Color(0xFF1F2937),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Energy Levels (Last 7 Entries)',
+              style: TextStyle(
+                color: Colors.grey[100],
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 200,
+              child: LineChart(
+                LineChartData(
+                  gridData: FlGridData(
+                    show: true,
+                    drawVerticalLine: false,
+                    horizontalInterval: 1,
+                    getDrawingHorizontalLine: (value) =>
+                        FlLine(color: Colors.grey[800], strokeWidth: 1),
+                  ),
+                  titlesData: FlTitlesData(
+                    show: true,
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: (value, meta) {
+                          if (value.toInt() >= 0 &&
+                              value.toInt() < last7Days.length) {
+                            final date = last7Days[value.toInt()].date;
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                '${date.day}/${date.month}',
+                                style: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontSize: 10,
+                                ),
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                        reservedSize: 30,
+                      ),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        interval: 1,
+                        getTitlesWidget: (value, meta) {
+                          if (value >= 1 && value <= 5) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Text(
+                                value.toInt().toString(),
+                                style: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontSize: 12,
+                                ),
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                        reservedSize: 30,
+                      ),
+                    ),
+                  ),
+                  borderData: FlBorderData(
+                    show: true,
+                    border: Border.all(color: Colors.grey[800]!),
+                  ),
+                  minX: 0,
+                  maxX: (last7Days.length - 1).toDouble().clamp(
+                    0,
+                    double.infinity,
+                  ),
+                  minY: 0,
+                  maxY: 5.5,
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: List.generate(
+                        last7Days.length,
+                        (index) => FlSpot(
+                          index.toDouble(),
+                          last7Days[index].energyLevel.toDouble(),
+                        ),
+                      ),
+                      isCurved: true,
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF4ADE80), Color(0xFF86EFAC)],
+                      ),
+                      barWidth: 3,
+                      isStrokeCapRound: true,
+                      dotData: FlDotData(
+                        show: true,
+                        getDotPainter: (spot, percent, barData, index) =>
+                            FlDotCirclePainter(
+                              radius: 4,
+                              color:
+                                  _energyColors[last7Days[index].energyLevel -
+                                      1],
+                              strokeWidth: 0,
+                            ),
+                      ),
+                      belowBarData: BarAreaData(
+                        show: true,
+                        gradient: LinearGradient(
+                          colors: [
+                            const Color(0xFF4ADE80).withValues(alpha: 0.3),
+                            const Color(0xFF4ADE80).withValues(alpha: 0.0),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSymptomsChart() {
+    final symptomCounts = <String, int>{};
+    for (final entry in _entries) {
+      for (final symptom in entry.symptoms) {
+        symptomCounts[symptom] = (symptomCounts[symptom] ?? 0) + 1;
+      }
+    }
+
+    if (symptomCounts.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final sortedSymptoms = symptomCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    final topSymptoms = sortedSymptoms.take(5).toList();
+
+    return Card(
+      color: const Color(0xFF1F2937),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Top Symptoms',
+              style: TextStyle(
+                color: Colors.grey[100],
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 200,
+              child: BarChart(
+                BarChartData(
+                  alignment: BarChartAlignment.spaceAround,
+                  maxY: topSymptoms.isEmpty
+                      ? 1
+                      : topSymptoms.first.value.toDouble() * 1.2,
+                  gridData: FlGridData(
+                    show: true,
+                    drawVerticalLine: false,
+                    getDrawingHorizontalLine: (value) =>
+                        FlLine(color: Colors.grey[800], strokeWidth: 1),
+                  ),
+                  titlesData: FlTitlesData(
+                    show: true,
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: (value, meta) {
+                          if (value.toInt() >= 0 &&
+                              value.toInt() < topSymptoms.length) {
+                            final symptom = topSymptoms[value.toInt()].key;
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                symptom.length > 10
+                                    ? '${symptom.substring(0, 10)}...'
+                                    : symptom,
+                                style: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontSize: 10,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                        reservedSize: 60,
+                      ),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: (value, meta) {
+                          if (value > 0) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Text(
+                                value.toInt().toString(),
+                                style: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontSize: 12,
+                                ),
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                        reservedSize: 30,
+                      ),
+                    ),
+                  ),
+                  borderData: FlBorderData(
+                    show: true,
+                    border: Border.all(color: Colors.grey[800]!),
+                  ),
+                  barGroups: List.generate(
+                    topSymptoms.length,
+                    (index) => BarChartGroupData(
+                      x: index,
+                      barRods: [
+                        BarChartRodData(
+                          toY: topSymptoms[index].value.toDouble(),
+                          color: Colors.red.withValues(alpha: 0.7),
+                          width: 20,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActivitiesChart() {
+    final activityCounts = <String, int>{};
+    for (final entry in _entries) {
+      for (final activity in entry.activities) {
+        activityCounts[activity] = (activityCounts[activity] ?? 0) + 1;
+      }
+    }
+
+    if (activityCounts.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final sortedActivities = activityCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    final topActivities = sortedActivities.take(5).toList();
+
+    return Card(
+      color: const Color(0xFF1F2937),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Top Activities',
+              style: TextStyle(
+                color: Colors.grey[100],
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 200,
+              child: BarChart(
+                BarChartData(
+                  alignment: BarChartAlignment.spaceAround,
+                  maxY: topActivities.isEmpty
+                      ? 1
+                      : topActivities.first.value.toDouble() * 1.2,
+                  gridData: FlGridData(
+                    show: true,
+                    drawVerticalLine: false,
+                    getDrawingHorizontalLine: (value) =>
+                        FlLine(color: Colors.grey[800], strokeWidth: 1),
+                  ),
+                  titlesData: FlTitlesData(
+                    show: true,
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: (value, meta) {
+                          if (value.toInt() >= 0 &&
+                              value.toInt() < topActivities.length) {
+                            final activity = topActivities[value.toInt()].key;
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                activity.length > 10
+                                    ? '${activity.substring(0, 10)}...'
+                                    : activity,
+                                style: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontSize: 10,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                        reservedSize: 60,
+                      ),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: (value, meta) {
+                          if (value > 0) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Text(
+                                value.toInt().toString(),
+                                style: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontSize: 12,
+                                ),
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                        reservedSize: 30,
+                      ),
+                    ),
+                  ),
+                  borderData: FlBorderData(
+                    show: true,
+                    border: Border.all(color: Colors.grey[800]!),
+                  ),
+                  barGroups: List.generate(
+                    topActivities.length,
+                    (index) => BarChartGroupData(
+                      x: index,
+                      barRods: [
+                        BarChartRodData(
+                          toY: topActivities[index].value.toDouble(),
+                          color: Colors.blue.withValues(alpha: 0.7),
+                          width: 20,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEntriesList(AppLocalizations l10n) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Recent Entries',
+          style: TextStyle(
+            color: Colors.grey[100],
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 12),
+        ...List.generate(_entries.length.clamp(0, 5), (index) {
+          final entry = _entries[index];
+          return Card(
+            margin: const EdgeInsets.only(bottom: 12),
+            color: const Color(0xFF1F2937),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            _energyIcons[entry.energyLevel - 1],
+                            color: _energyColors[entry.energyLevel - 1],
+                            size: 24,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            _getEnergyLabel(entry.energyLevel),
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        _formatDate(entry.date),
+                        style: TextStyle(color: Colors.grey[400], fontSize: 12),
+                      ),
+                    ],
+                  ),
+                  if (entry.activities.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    ...entry.activities.map(
+                      (activity) => Padding(
+                        padding: const EdgeInsets.only(bottom: 4.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '• ',
+                              style: TextStyle(color: Colors.grey[300]),
+                            ),
+                            Expanded(
+                              child: Text(
+                                activity,
+                                style: TextStyle(color: Colors.grey[300]),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                  if (entry.symptoms.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: entry.symptoms
+                          .map(
+                            (symptom) => Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(
+                                  color: Colors.red.withValues(alpha: 0.5),
+                                ),
+                              ),
+                              child: Text(
+                                symptom,
+                                style: TextStyle(
+                                  color: Colors.red[300],
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ],
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton.icon(
+                        onPressed: () => _deleteEntry(entry.id),
+                        icon: const Icon(Icons.delete_outline, size: 18),
+                        label: Text(l10n.delete),
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.grey[400],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        }),
+      ],
+    );
   }
 
   @override
