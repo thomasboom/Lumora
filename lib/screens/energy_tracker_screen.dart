@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:lumora/l10n/app_localizations.dart';
 import '../models/energy_entry.dart';
+import '../models/insight_model.dart';
 import '../services/storage_service.dart';
+import '../services/insights_service.dart';
 import 'settings_screen.dart';
+import 'insights_screen.dart';
 
 class EnergyTrackerScreen extends StatefulWidget {
   const EnergyTrackerScreen({super.key});
@@ -14,7 +17,10 @@ class EnergyTrackerScreen extends StatefulWidget {
 
 class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
   final StorageService _storageService = StorageService();
+  final InsightsService _insightsService = InsightsService();
   List<EnergyEntry> _entries = [];
+  List<InsightModel> _insights = [];
+  List<WeeklySummary> _weeklySummaries = [];
   int? _selectedEnergyLevel;
   final List<String> _activities = [];
   final TextEditingController _activityController = TextEditingController();
@@ -66,6 +72,8 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
     if (mounted) {
       setState(() {
         _entries = entries;
+        _insights = _insightsService.generateInsights(entries);
+        _weeklySummaries = _insightsService.getWeeklySummaries(entries);
         _isLoading = false;
       });
     }
@@ -820,6 +828,8 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  _buildTodayInsights(l10n),
+                  const SizedBox(height: 24),
                   _buildEnergyLevelChart(l10n),
                   const SizedBox(height: 24),
                   _buildSymptomsChart(l10n),
@@ -838,6 +848,157 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
         onPressed: _showNewEntry,
         label: Text(l10n.fabAddEntry),
         icon: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  Widget _buildTodayInsights(AppLocalizations l10n) {
+    if (_insights.isEmpty && _weeklySummaries.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Card(
+      color: const Color(0xFF1F2937),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.lightbulb,
+                    color: Colors.amber[400],
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.personalizedInsights,
+                        style: TextStyle(
+                          color: Colors.grey[100],
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      if (_weeklySummaries.isNotEmpty)
+                        Text(
+                          '${_weeklySummaries.first.averageEnergy.toStringAsFixed(1)}/5 ${l10n.averageEnergy}',
+                          style: TextStyle(
+                            color: Colors.grey[400],
+                            fontSize: 12,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.arrow_forward),
+                  color: Colors.grey[400],
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const InsightsScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          if (_insights.isNotEmpty) ...[
+            const Divider(height: 1, color: Color(0xFF374151)),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ...List.generate(
+                    _insights.length.clamp(0, 2),
+                    (index) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: _insights[index].color.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: _insights[index].color.withValues(
+                              alpha: 0.3,
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              _insights[index].icon,
+                              color: _insights[index].color,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _insights[index].title,
+                                    style: TextStyle(
+                                      color: Colors.grey[100],
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    _insights[index].description,
+                                    style: TextStyle(
+                                      color: Colors.grey[400],
+                                      fontSize: 12,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (_insights.length > 2)
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const InsightsScreen(),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.visibility, size: 16),
+                      label: Text(l10n.insightsTitle),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.grey[400],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

@@ -490,6 +490,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Symptom duration over time'**
   String get symptomDurationChartTitle;
+
+  /// No description provided for @insightsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights'**
+  String get insightsTitle;
+
+  /// No description provided for @noInsightsData.
+  ///
+  /// In en, this message translates to:
+  /// **'Need more data'**
+  String get noInsightsData;
+
+  /// No description provided for @noInsightsDataSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track more entries to see insights'**
+  String get noInsightsDataSubtitle;
+
+  /// No description provided for @personalizedInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'Personalized Insights'**
+  String get personalizedInsights;
+
+  /// No description provided for @whatWorkedThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'What worked this week?'**
+  String get whatWorkedThisWeek;
+
+  /// No description provided for @averageEnergy.
+  ///
+  /// In en, this message translates to:
+  /// **'Average Energy'**
+  String get averageEnergy;
+
+  /// No description provided for @helpfulActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'Helpful activities'**
+  String get helpfulActivities;
+
+  /// No description provided for @activitiesToWatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Activities to watch'**
+  String get activitiesToWatch;
+
+  /// No description provided for @triggerDetection.
+  ///
+  /// In en, this message translates to:
+  /// **'Trigger Detection'**
+  String get triggerDetection;
+
+  /// No description provided for @recoveryTrends.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery Trends'**
+  String get recoveryTrends;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get viewAll;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

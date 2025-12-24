@@ -65,5 +65,16 @@
   "severity5": "Matig",
   "severity10": "Zeer ernstig",
   "symptomSeverityChartTitle": "Ernst van symptomen over tijd",
-  "symptomDurationChartTitle": "Duur van symptomen over tijd"
+  "symptomDurationChartTitle": "Duur van symptomen over tijd",
+  "insightsTitle": "Inzichten",
+  "noInsightsData": "Meer gegevens nodig",
+  "noInsightsDataSubtitle": "Registreer meer vermeldingen om inzichten te zien",
+  "personalizedInsights": "Gepersonaliseerde inzichten",
+  "whatWorkedThisWeek": "Wat werkte deze week?",
+  "averageEnergy": "Gemiddeld energieniveau",
+  "helpfulActivities": "Behulpzame activiteiten",
+  "activitiesToWatch": "Activiteiten om te volgen",
+  "triggerDetection": "Trigger detectie",
+  "recoveryTrends": "Hersteltrends",
+  "viewAll": "Bekijk alles"
 }

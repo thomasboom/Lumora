@@ -209,4 +209,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get symptomDurationChartTitle => 'Symptom duration over time';
+
+  @override
+  String get insightsTitle => 'Insights';
+
+  @override
+  String get noInsightsData => 'Need more data';
+
+  @override
+  String get noInsightsDataSubtitle => 'Track more entries to see insights';
+
+  @override
+  String get personalizedInsights => 'Personalized Insights';
+
+  @override
+  String get whatWorkedThisWeek => 'What worked this week?';
+
+  @override
+  String get averageEnergy => 'Average Energy';
+
+  @override
+  String get helpfulActivities => 'Helpful activities';
+
+  @override
+  String get activitiesToWatch => 'Activities to watch';
+
+  @override
+  String get triggerDetection => 'Trigger Detection';
+
+  @override
+  String get recoveryTrends => 'Recovery Trends';
+
+  @override
+  String get viewAll => 'View All';
 }

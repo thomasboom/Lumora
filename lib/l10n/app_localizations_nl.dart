@@ -209,4 +209,37 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get symptomDurationChartTitle => 'Duur van symptomen over tijd';
+
+  @override
+  String get insightsTitle => 'Inzichten';
+
+  @override
+  String get noInsightsData => 'Meer gegevens nodig';
+
+  @override
+  String get noInsightsDataSubtitle => 'Registreer meer vermeldingen om inzichten te zien';
+
+  @override
+  String get personalizedInsights => 'Gepersonaliseerde inzichten';
+
+  @override
+  String get whatWorkedThisWeek => 'Wat werkte deze week?';
+
+  @override
+  String get averageEnergy => 'Gemiddeld energieniveau';
+
+  @override
+  String get helpfulActivities => 'Behulpzame activiteiten';
+
+  @override
+  String get activitiesToWatch => 'Activiteiten om te volgen';
+
+  @override
+  String get triggerDetection => 'Trigger detectie';
+
+  @override
+  String get recoveryTrends => 'Hersteltrends';
+
+  @override
+  String get viewAll => 'Bekijk alles';
 }
