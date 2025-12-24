@@ -262,11 +262,13 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
         children: [
           Text(
             l10n.activitiesTitle,
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(color: Colors.grey[300]),
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              color: Colors.grey[100],
+              fontWeight: FontWeight.w600,
+            ),
+            textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 32),
           if (uniqueActivities.isNotEmpty) ...[
             Wrap(
               spacing: 8,
@@ -406,11 +408,13 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
         children: [
           Text(
             l10n.symptomsTitle,
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(color: Colors.grey[300]),
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              color: Colors.grey[100],
+              fontWeight: FontWeight.w600,
+            ),
+            textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 32),
           Wrap(
             spacing: 10,
             runSpacing: 10,
@@ -570,10 +574,6 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
       return Scaffold(
         backgroundColor: const Color(0xFF111827),
         appBar: AppBar(
-          title: Text(
-            _getStepTitle(_currentStep),
-            style: const TextStyle(color: Colors.white),
-          ),
           backgroundColor: Colors.transparent,
           elevation: 0,
           iconTheme: const IconThemeData(color: Colors.white),
@@ -594,13 +594,7 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
               LinearProgressIndicator(
                 value: (_currentStep + 1) / 3,
                 backgroundColor: Colors.grey.shade800,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  _selectedEnergyLevel != null &&
-                          _selectedEnergyLevel! > 0 &&
-                          _selectedEnergyLevel! <= _energyColors.length
-                      ? _energyColors[_selectedEnergyLevel! - 1]
-                      : Colors.grey.shade600,
-                ),
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.grey),
               ),
               Expanded(child: _buildStepContent(l10n)),
               _buildNavigationButtons(l10n),
