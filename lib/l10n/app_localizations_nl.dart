@@ -242,4 +242,25 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get viewAll => 'Bekijk alles';
+
+  @override
+  String get addCustomSymptom => 'Aangepast symptoom toevoegen';
+
+  @override
+  String get customSymptomHint => 'Voer symptoomnaam in...';
+
+  @override
+  String get manageCustomSymptoms => 'Aangepaste symptomen beheren';
+
+  @override
+  String get noCustomSymptoms => 'Nog geen aangepaste symptomen';
+
+  @override
+  String get customSymptomsSection => 'Aangepaste symptomen';
+
+  @override
+  String get addSymptom => 'Symptoom toevoegen';
+
+  @override
+  String get add => 'Toevoegen';
 }

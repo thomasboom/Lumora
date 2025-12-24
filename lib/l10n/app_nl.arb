@@ -76,5 +76,12 @@
   "activitiesToWatch": "Activiteiten om te volgen",
   "triggerDetection": "Trigger detectie",
   "recoveryTrends": "Hersteltrends",
-  "viewAll": "Bekijk alles"
+  "viewAll": "Bekijk alles",
+  "addCustomSymptom": "Aangepast symptoom toevoegen",
+  "customSymptomHint": "Voer symptoomnaam in...",
+  "manageCustomSymptoms": "Aangepaste symptomen beheren",
+  "noCustomSymptoms": "Nog geen aangepaste symptomen",
+  "customSymptomsSection": "Aangepaste symptomen",
+  "addSymptom": "Symptoom toevoegen",
+  "add": "Toevoegen"
 }

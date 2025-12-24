@@ -28,6 +28,9 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
   bool _showHistory = false;
   int _currentStep = 0;
   final List<SymptomEntry> _selectedSymptoms = [];
+  List<String> _customSymptoms = [];
+  final TextEditingController _customSymptomController =
+      TextEditingController();
 
   final List<IconData> _energyIcons = [
     Icons.battery_alert,
@@ -47,7 +50,7 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
 
   List<String> _symptoms(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return [
+    final defaultSymptoms = [
       l10n.symptomFatigue,
       l10n.symptomBrainFog,
       l10n.symptomDizziness,
@@ -59,12 +62,14 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
       l10n.symptomMuscleWeakness,
       l10n.symptomJointPain,
     ];
+    return [...defaultSymptoms, ..._customSymptoms];
   }
 
   @override
   void initState() {
     super.initState();
     _loadEntries();
+    _loadCustomSymptoms();
   }
 
   Future<void> _loadEntries() async {
@@ -75,6 +80,15 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
         _insights = _insightsService.generateInsights(entries);
         _weeklySummaries = _insightsService.getWeeklySummaries(entries);
         _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _loadCustomSymptoms() async {
+    final symptoms = await _storageService.getCustomSymptoms();
+    if (mounted) {
+      setState(() {
+        _customSymptoms = symptoms;
       });
     }
   }
@@ -154,6 +168,117 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
         duration: duration,
       );
     });
+  }
+
+  Future<void> _addCustomSymptom(String symptom) async {
+    if (symptom.trim().isEmpty) return;
+    await _storageService.saveCustomSymptom(symptom);
+    await _loadCustomSymptoms();
+  }
+
+  Future<void> _deleteCustomSymptom(String symptom) async {
+    await _storageService.deleteCustomSymptom(symptom);
+    await _loadCustomSymptoms();
+  }
+
+  void _showAddCustomSymptomDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF1F2937),
+        title: Text(
+          AppLocalizations.of(context)!.addCustomSymptom,
+          style: const TextStyle(color: Colors.white),
+        ),
+        content: TextField(
+          controller: _customSymptomController,
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            hintText: AppLocalizations.of(context)!.customSymptomHint,
+            hintStyle: TextStyle(color: Colors.grey[500]),
+            filled: true,
+            fillColor: const Color(0xFF374151),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              _customSymptomController.clear();
+              Navigator.of(context).pop();
+            },
+            child: Text(AppLocalizations.of(context)!.cancel),
+          ),
+          TextButton(
+            onPressed: () {
+              final symptom = _customSymptomController.text.trim();
+              if (symptom.isNotEmpty) {
+                _addCustomSymptom(symptom);
+                _customSymptomController.clear();
+                Navigator.of(context).pop();
+              }
+            },
+            child: Text(AppLocalizations.of(context)!.add),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showManageCustomSymptomsDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF1F2937),
+        title: Text(
+          AppLocalizations.of(context)!.manageCustomSymptoms,
+          style: const TextStyle(color: Colors.white),
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: _customSymptoms.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    AppLocalizations.of(context)!.noCustomSymptoms,
+                    style: TextStyle(color: Colors.grey[400]),
+                  ),
+                )
+              : ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _customSymptoms.length,
+                  itemBuilder: (context, index) {
+                    final symptom = _customSymptoms[index];
+                    return ListTile(
+                      title: Text(
+                        symptom,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () async {
+                          await _deleteCustomSymptom(symptom);
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                            _showManageCustomSymptomsDialog();
+                          }
+                        },
+                      ),
+                    );
+                  },
+                ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(AppLocalizations.of(context)!.close),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _deleteEntry(String id) async {
@@ -766,6 +891,21 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
                     });
                   },
                 )
+              : null,
+          actions: _currentStep == 2
+              ? [
+                  if (_customSymptoms.isNotEmpty)
+                    IconButton(
+                      onPressed: _showManageCustomSymptomsDialog,
+                      icon: const Icon(Icons.settings),
+                      tooltip: l10n.manageCustomSymptoms,
+                    ),
+                  IconButton(
+                    onPressed: _showAddCustomSymptomDialog,
+                    icon: const Icon(Icons.add),
+                    tooltip: l10n.addCustomSymptom,
+                  ),
+                ]
               : null,
         ),
         body: SafeArea(
@@ -1956,6 +2096,7 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
   @override
   void dispose() {
     _activityController.dispose();
+    _customSymptomController.dispose();
     super.dispose();
   }
 }

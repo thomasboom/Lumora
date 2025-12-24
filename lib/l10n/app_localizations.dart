@@ -556,6 +556,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View All'**
   String get viewAll;
+
+  /// No description provided for @addCustomSymptom.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Custom Symptom'**
+  String get addCustomSymptom;
+
+  /// No description provided for @customSymptomHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter symptom name...'**
+  String get customSymptomHint;
+
+  /// No description provided for @manageCustomSymptoms.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Custom Symptoms'**
+  String get manageCustomSymptoms;
+
+  /// No description provided for @noCustomSymptoms.
+  ///
+  /// In en, this message translates to:
+  /// **'No custom symptoms yet'**
+  String get noCustomSymptoms;
+
+  /// No description provided for @customSymptomsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Symptoms'**
+  String get customSymptomsSection;
+
+  /// No description provided for @addSymptom.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Symptom'**
+  String get addSymptom;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

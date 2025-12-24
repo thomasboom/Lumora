@@ -76,5 +76,12 @@
   "activitiesToWatch": "Activities to watch",
   "triggerDetection": "Trigger Detection",
   "recoveryTrends": "Recovery Trends",
-  "viewAll": "View All"
+  "viewAll": "View All",
+  "addCustomSymptom": "Add Custom Symptom",
+  "customSymptomHint": "Enter symptom name...",
+  "manageCustomSymptoms": "Manage Custom Symptoms",
+  "noCustomSymptoms": "No custom symptoms yet",
+  "customSymptomsSection": "Custom Symptoms",
+  "addSymptom": "Add Symptom",
+  "add": "Add"
 }

@@ -242,4 +242,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewAll => 'View All';
+
+  @override
+  String get addCustomSymptom => 'Add Custom Symptom';
+
+  @override
+  String get customSymptomHint => 'Enter symptom name...';
+
+  @override
+  String get manageCustomSymptoms => 'Manage Custom Symptoms';
+
+  @override
+  String get noCustomSymptoms => 'No custom symptoms yet';
+
+  @override
+  String get customSymptomsSection => 'Custom Symptoms';
+
+  @override
+  String get addSymptom => 'Add Symptom';
+
+  @override
+  String get add => 'Add';
 }
