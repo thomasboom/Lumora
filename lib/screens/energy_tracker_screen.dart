@@ -38,18 +38,21 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
     const Color(0xFF4ADE80),
   ];
 
-  final List<String> _symptoms = [
-    'fatigue',
-    'brain fog',
-    'dizziness',
-    'pain',
-    'headache',
-    'nausea',
-    'shortness of breath',
-    'chest pain',
-    'muscle weakness',
-    'joint pain',
-  ];
+  List<String> _symptoms(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      l10n.symptomFatigue,
+      l10n.symptomBrainFog,
+      l10n.symptomDizziness,
+      l10n.symptomPain,
+      l10n.symptomHeadache,
+      l10n.symptomNausea,
+      l10n.symptomShortnessOfBreath,
+      l10n.symptomChestPain,
+      l10n.symptomMuscleWeakness,
+      l10n.symptomJointPain,
+    ];
+  }
 
   @override
   void initState() {
@@ -411,7 +414,7 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
           Wrap(
             spacing: 10,
             runSpacing: 10,
-            children: _symptoms.map((symptom) {
+            children: _symptoms(context).map((symptom) {
               final isSelected = _selectedSymptoms.contains(symptom);
               return GestureDetector(
                 onTap: () => _toggleSymptom(symptom),
@@ -637,11 +640,11 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _buildEnergyLevelChart(),
+                  _buildEnergyLevelChart(l10n),
                   const SizedBox(height: 24),
-                  _buildSymptomsChart(),
+                  _buildSymptomsChart(l10n),
                   const SizedBox(height: 24),
-                  _buildActivitiesChart(),
+                  _buildActivitiesChart(l10n),
                   const SizedBox(height: 24),
                   _buildEntriesList(l10n),
                 ],
@@ -649,22 +652,22 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
             ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _showNewEntry,
-        label: Text(l10n.saveEntry),
+        label: Text(l10n.fabAddEntry),
         icon: const Icon(Icons.add),
       ),
     );
   }
 
-  String _formatDate(DateTime date) {
+  String _formatDate(DateTime date, AppLocalizations l10n) {
     final now = DateTime.now();
     final difference = now.difference(date);
 
     if (difference.inDays == 0) {
-      return 'Today, ${_formatTime(date)}';
+      return '${l10n.today}, ${_formatTime(date)}';
     } else if (difference.inDays == 1) {
-      return 'Yesterday, ${_formatTime(date)}';
+      return '${l10n.yesterday}, ${_formatTime(date)}';
     } else if (difference.inDays < 7) {
-      return '${difference.inDays} days ago';
+      return l10n.daysAgo(difference.inDays);
     } else {
       return '${date.day}/${date.month}/${date.year}';
     }
@@ -676,7 +679,7 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
     return '$hour:$minute';
   }
 
-  Widget _buildEnergyLevelChart() {
+  Widget _buildEnergyLevelChart(AppLocalizations l10n) {
     final sortedEntries = List<EnergyEntry>.from(_entries)
       ..sort((a, b) => a.date.compareTo(b.date));
 
@@ -690,7 +693,7 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Energy Levels (Last 7 Entries)',
+              l10n.energyLevelsChartTitle,
               style: TextStyle(
                 color: Colors.grey[100],
                 fontSize: 16,
@@ -822,7 +825,7 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
     );
   }
 
-  Widget _buildSymptomsChart() {
+  Widget _buildSymptomsChart(AppLocalizations l10n) {
     final symptomCounts = <String, int>{};
     for (final entry in _entries) {
       for (final symptom in entry.symptoms) {
@@ -846,7 +849,7 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Top Symptoms',
+              l10n.topSymptomsChartTitle,
               style: TextStyle(
                 color: Colors.grey[100],
                 fontSize: 16,
@@ -951,7 +954,7 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
     );
   }
 
-  Widget _buildActivitiesChart() {
+  Widget _buildActivitiesChart(AppLocalizations l10n) {
     final activityCounts = <String, int>{};
     for (final entry in _entries) {
       for (final activity in entry.activities) {
@@ -975,7 +978,7 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Top Activities',
+              l10n.topActivitiesChartTitle,
               style: TextStyle(
                 color: Colors.grey[100],
                 fontSize: 16,
@@ -1085,7 +1088,7 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Recent Entries',
+          l10n.recentEntriesTitle,
           style: TextStyle(
             color: Colors.grey[100],
             fontSize: 16,
@@ -1125,7 +1128,7 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
                         ],
                       ),
                       Text(
-                        _formatDate(entry.date),
+                        _formatDate(entry.date, l10n),
                         style: TextStyle(color: Colors.grey[400], fontSize: 12),
                       ),
                     ],

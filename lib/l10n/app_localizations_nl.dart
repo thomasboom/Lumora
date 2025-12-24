@@ -12,58 +12,58 @@ class AppLocalizationsNl extends AppLocalizations {
   String get appTitle => 'Lumora';
 
   @override
-  String get disclaimerTitle => 'Belangrijk';
+  String get disclaimerTitle => 'Hé, laten we even praten';
 
   @override
-  String get disclaimerText => 'Er is geen enkele manier om Long Covid te genezen. Houd jezelf in de gaten en vertrouw niet alleen op technologie.';
+  String get disclaimerText => 'Er is geen enkel middel tegen Long Covid. Luister goed naar je lichaam en vertrouw niet alleen op technologie, oké?';
 
   @override
-  String get disclaimerButton => 'Oké, ik begrijp het';
+  String get disclaimerButton => 'Begrepen, ik snap het';
 
   @override
-  String get energyTitle => 'Hoe voel je je?';
+  String get energyTitle => 'Hoe voel je je nu?';
 
   @override
-  String get energyLevel1 => 'Heel moe';
+  String get energyLevel1 => 'Helemaal uitgeput';
 
   @override
-  String get energyLevel2 => 'Moe';
+  String get energyLevel2 => 'Best moe';
 
   @override
-  String get energyLevel3 => 'Oké';
+  String get energyLevel3 => 'Nou ja, het gaat';
 
   @override
-  String get energyLevel4 => 'Goed';
+  String get energyLevel4 => 'Niet slecht';
 
   @override
-  String get energyLevel5 => 'Geweldig';
+  String get energyLevel5 => 'Top gevoel';
 
   @override
   String get activitiesTitle => 'Wat heb je gedaan?';
 
   @override
-  String get activityHint => 'Typ iets wat je hebt gedaan...';
+  String get activityHint => 'Typ wat je vandaag hebt gedaan...';
 
   @override
   String get addActivity => 'Toevoegen';
 
   @override
-  String get saveEntry => 'Opslaan';
+  String get saveEntry => 'Klaar, opslaan';
 
   @override
-  String get historyTitle => 'Geschiedenis';
+  String get historyTitle => 'Jouw reis';
 
   @override
   String get delete => 'Verwijderen';
 
   @override
-  String get noEntries => 'Nog geen vermeldingen';
+  String get noEntries => 'Nog geen vermeldingen. Laten we beginnen!';
 
   @override
   String get symptomsTitle => 'Heb je symptomen ervaren?';
 
   @override
-  String get symptomsHint => 'Selecteer symptomen...';
+  String get symptomsHint => 'Kies wat je voelt...';
 
   @override
   String get next => 'Volgende';
@@ -75,5 +75,61 @@ class AppLocalizationsNl extends AppLocalizations {
   String get newActivity => 'Nieuwe activiteit';
 
   @override
-  String get selectActivities => 'Selecteer activiteiten';
+  String get selectActivities => 'Dit heb je gekozen';
+
+  @override
+  String get energyLevelsChartTitle => 'Je energieniveau recent';
+
+  @override
+  String get topSymptomsChartTitle => 'Meest voorkomende symptomen';
+
+  @override
+  String get topActivitiesChartTitle => 'Wat je hebt gedaan';
+
+  @override
+  String get recentEntriesTitle => 'Je recente vermeldingen';
+
+  @override
+  String get today => 'Vandaag';
+
+  @override
+  String get yesterday => 'Gisteren';
+
+  @override
+  String daysAgo(Object count) {
+    return '$count dagen geleden';
+  }
+
+  @override
+  String get symptomFatigue => 'vermoeidheid';
+
+  @override
+  String get symptomBrainFog => 'hersenmist';
+
+  @override
+  String get symptomDizziness => 'duizeligheid';
+
+  @override
+  String get symptomPain => 'pijn';
+
+  @override
+  String get symptomHeadache => 'hoofdpijn';
+
+  @override
+  String get symptomNausea => 'misselijkheid';
+
+  @override
+  String get symptomShortnessOfBreath => 'kortademigheid';
+
+  @override
+  String get symptomChestPain => 'pijn op de borst';
+
+  @override
+  String get symptomMuscleWeakness => 'spierzwakte';
+
+  @override
+  String get symptomJointPain => 'gewrichtspijn';
+
+  @override
+  String get fabAddEntry => 'Nieuwe vermelding';
 }

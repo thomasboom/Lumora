@@ -104,67 +104,67 @@ abstract class AppLocalizations {
   /// No description provided for @disclaimerTitle.
   ///
   /// In en, this message translates to:
-  /// **'Important'**
+  /// **'Hey there, let\'s talk'**
   String get disclaimerTitle;
 
   /// No description provided for @disclaimerText.
   ///
   /// In en, this message translates to:
-  /// **'There\'s no one way to cure Long Covid. Keep an eye on yourself and don\'t just rely on technology.'**
+  /// **'There\'s no single cure for Long Covid. Keep listening to your body and don\'t just rely on technology, okay?'**
   String get disclaimerText;
 
   /// No description provided for @disclaimerButton.
   ///
   /// In en, this message translates to:
-  /// **'Alright, I understand'**
+  /// **'Got it, I understand'**
   String get disclaimerButton;
 
   /// No description provided for @energyTitle.
   ///
   /// In en, this message translates to:
-  /// **'How are you feeling?'**
+  /// **'How are you feeling right now?'**
   String get energyTitle;
 
   /// No description provided for @energyLevel1.
   ///
   /// In en, this message translates to:
-  /// **'Very tired'**
+  /// **'Exhausted'**
   String get energyLevel1;
 
   /// No description provided for @energyLevel2.
   ///
   /// In en, this message translates to:
-  /// **'Tired'**
+  /// **'Pretty tired'**
   String get energyLevel2;
 
   /// No description provided for @energyLevel3.
   ///
   /// In en, this message translates to:
-  /// **'Okay'**
+  /// **'Alright, I guess'**
   String get energyLevel3;
 
   /// No description provided for @energyLevel4.
   ///
   /// In en, this message translates to:
-  /// **'Good'**
+  /// **'Not bad'**
   String get energyLevel4;
 
   /// No description provided for @energyLevel5.
   ///
   /// In en, this message translates to:
-  /// **'Great'**
+  /// **'Feeling great'**
   String get energyLevel5;
 
   /// No description provided for @activitiesTitle.
   ///
   /// In en, this message translates to:
-  /// **'What did you do?'**
+  /// **'What have you been up to?'**
   String get activitiesTitle;
 
   /// No description provided for @activityHint.
   ///
   /// In en, this message translates to:
-  /// **'Type something you did...'**
+  /// **'Type what you did today...'**
   String get activityHint;
 
   /// No description provided for @addActivity.
@@ -176,13 +176,13 @@ abstract class AppLocalizations {
   /// No description provided for @saveEntry.
   ///
   /// In en, this message translates to:
-  /// **'Save'**
+  /// **'Done, save this'**
   String get saveEntry;
 
   /// No description provided for @historyTitle.
   ///
   /// In en, this message translates to:
-  /// **'History'**
+  /// **'Your journey'**
   String get historyTitle;
 
   /// No description provided for @delete.
@@ -194,7 +194,7 @@ abstract class AppLocalizations {
   /// No description provided for @noEntries.
   ///
   /// In en, this message translates to:
-  /// **'No entries yet'**
+  /// **'No entries yet. Let\'s start tracking!'**
   String get noEntries;
 
   /// No description provided for @symptomsTitle.
@@ -206,7 +206,7 @@ abstract class AppLocalizations {
   /// No description provided for @symptomsHint.
   ///
   /// In en, this message translates to:
-  /// **'Select symptoms...'**
+  /// **'Pick what you\'re feeling...'**
   String get symptomsHint;
 
   /// No description provided for @next.
@@ -230,8 +230,116 @@ abstract class AppLocalizations {
   /// No description provided for @selectActivities.
   ///
   /// In en, this message translates to:
-  /// **'Select activities'**
+  /// **'Here\'s what you picked'**
   String get selectActivities;
+
+  /// No description provided for @energyLevelsChartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your energy levels lately'**
+  String get energyLevelsChartTitle;
+
+  /// No description provided for @topSymptomsChartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Most common symptoms'**
+  String get topSymptomsChartTitle;
+
+  /// No description provided for @topActivitiesChartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What you\'ve been doing'**
+  String get topActivitiesChartTitle;
+
+  /// No description provided for @recentEntriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your recent entries'**
+  String get recentEntriesTitle;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
+
+  /// No description provided for @daysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days ago'**
+  String daysAgo(Object count);
+
+  /// No description provided for @symptomFatigue.
+  ///
+  /// In en, this message translates to:
+  /// **'fatigue'**
+  String get symptomFatigue;
+
+  /// No description provided for @symptomBrainFog.
+  ///
+  /// In en, this message translates to:
+  /// **'brain fog'**
+  String get symptomBrainFog;
+
+  /// No description provided for @symptomDizziness.
+  ///
+  /// In en, this message translates to:
+  /// **'dizziness'**
+  String get symptomDizziness;
+
+  /// No description provided for @symptomPain.
+  ///
+  /// In en, this message translates to:
+  /// **'pain'**
+  String get symptomPain;
+
+  /// No description provided for @symptomHeadache.
+  ///
+  /// In en, this message translates to:
+  /// **'headache'**
+  String get symptomHeadache;
+
+  /// No description provided for @symptomNausea.
+  ///
+  /// In en, this message translates to:
+  /// **'nausea'**
+  String get symptomNausea;
+
+  /// No description provided for @symptomShortnessOfBreath.
+  ///
+  /// In en, this message translates to:
+  /// **'shortness of breath'**
+  String get symptomShortnessOfBreath;
+
+  /// No description provided for @symptomChestPain.
+  ///
+  /// In en, this message translates to:
+  /// **'chest pain'**
+  String get symptomChestPain;
+
+  /// No description provided for @symptomMuscleWeakness.
+  ///
+  /// In en, this message translates to:
+  /// **'muscle weakness'**
+  String get symptomMuscleWeakness;
+
+  /// No description provided for @symptomJointPain.
+  ///
+  /// In en, this message translates to:
+  /// **'joint pain'**
+  String get symptomJointPain;
+
+  /// No description provided for @fabAddEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Add new entry'**
+  String get fabAddEntry;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
