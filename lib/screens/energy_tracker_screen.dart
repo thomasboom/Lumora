@@ -504,8 +504,12 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
                 child: ElevatedButton(
                   onPressed: _canProceed() ? _handleNext : null,
                   style: ElevatedButton.styleFrom(
-                    disabledBackgroundColor: Colors.grey[800],
-                    disabledForegroundColor: Colors.grey[600],
+                    backgroundColor: _canProceed()
+                        ? Colors.blue
+                        : Colors.grey[800],
+                    foregroundColor: _canProceed()
+                        ? Colors.white
+                        : Colors.grey[600],
                   ),
                   child: Text(
                     _currentStep == 2 ? l10n.saveEntry : l10n.next,
