@@ -438,13 +438,6 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
               );
             }).toList(),
           ),
-          if (_selectedSymptoms.isNotEmpty) ...[
-            const SizedBox(height: 24),
-            Text(
-              '${_selectedSymptoms.length} ${l10n.symptomsHint}',
-              style: TextStyle(color: Colors.grey[400], fontSize: 14),
-            ),
-          ],
         ],
       ),
     );
