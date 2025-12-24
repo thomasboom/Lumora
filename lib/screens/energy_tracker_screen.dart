@@ -21,7 +21,7 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
   bool _isLoading = true;
   bool _showHistory = false;
   int _currentStep = 0;
-  final List<String> _selectedSymptoms = [];
+  final List<SymptomEntry> _selectedSymptoms = [];
 
   final List<IconData> _energyIcons = [
     Icons.battery_alert,
@@ -115,11 +115,36 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
 
   void _toggleSymptom(String symptom) {
     setState(() {
-      if (_selectedSymptoms.contains(symptom)) {
-        _selectedSymptoms.remove(symptom);
+      final existingIndex = _selectedSymptoms.indexWhere(
+        (s) => s.name == symptom,
+      );
+      if (existingIndex >= 0) {
+        _selectedSymptoms.removeAt(existingIndex);
       } else {
-        _selectedSymptoms.add(symptom);
+        _selectedSymptoms.add(
+          SymptomEntry(name: symptom, severity: 5, duration: 0),
+        );
       }
+    });
+  }
+
+  void _updateSymptomSeverity(int index, int severity) {
+    setState(() {
+      _selectedSymptoms[index] = SymptomEntry(
+        name: _selectedSymptoms[index].name,
+        severity: severity,
+        duration: _selectedSymptoms[index].duration,
+      );
+    });
+  }
+
+  void _updateSymptomDuration(int index, int duration) {
+    setState(() {
+      _selectedSymptoms[index] = SymptomEntry(
+        name: _selectedSymptoms[index].name,
+        severity: _selectedSymptoms[index].severity,
+        duration: duration,
+      );
     });
   }
 
@@ -406,7 +431,9 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
             spacing: 10,
             runSpacing: 10,
             children: _symptoms(context).map((symptom) {
-              final isSelected = _selectedSymptoms.contains(symptom);
+              final isSelected = _selectedSymptoms.any(
+                (s) => s.name == symptom,
+              );
               return GestureDetector(
                 onTap: () => _toggleSymptom(symptom),
                 child: Container(
@@ -438,6 +465,167 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
               );
             }).toList(),
           ),
+          if (_selectedSymptoms.isNotEmpty) ...[
+            const SizedBox(height: 32),
+            Text(
+              l10n.symptomsHint,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Colors.grey[100],
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ...List.generate(_selectedSymptoms.length, (index) {
+              final symptom = _selectedSymptoms[index];
+              return Container(
+                margin: const EdgeInsets.only(bottom: 20),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1F2937),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.red.withValues(alpha: 0.5)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          symptom.name,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => _toggleSymptom(symptom.name),
+                          icon: const Icon(Icons.close, color: Colors.red),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      l10n.severityTitle,
+                      style: TextStyle(color: Colors.grey[300], fontSize: 14),
+                    ),
+                    const SizedBox(height: 8),
+                    SliderTheme(
+                      data: SliderTheme.of(context).copyWith(
+                        trackHeight: 4,
+                        thumbShape: const RoundSliderThumbShape(
+                          enabledThumbRadius: 8,
+                        ),
+                        overlayShape: const RoundSliderOverlayShape(
+                          overlayRadius: 16,
+                        ),
+                        activeTrackColor: Colors.red[400],
+                        inactiveTrackColor: Colors.grey[700],
+                        thumbColor: Colors.red[400],
+                        overlayColor: Colors.red.withValues(alpha: 0.2),
+                      ),
+                      child: Slider(
+                        value: symptom.severity.toDouble(),
+                        min: 1,
+                        max: 10,
+                        divisions: 9,
+                        label: symptom.severity.toString(),
+                        onChanged: (value) {
+                          _updateSymptomSeverity(index, value.round());
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            l10n.severity1,
+                            style: TextStyle(
+                              color: Colors.grey[500],
+                              fontSize: 12,
+                            ),
+                          ),
+                          Text(
+                            '${symptom.severity}/10',
+                            style: TextStyle(
+                              color: Colors.red[300],
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            l10n.severity10,
+                            style: TextStyle(
+                              color: Colors.grey[500],
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      l10n.durationTitle,
+                      style: TextStyle(color: Colors.grey[300], fontSize: 14),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SliderTheme(
+                            data: SliderTheme.of(context).copyWith(
+                              trackHeight: 4,
+                              thumbShape: const RoundSliderThumbShape(
+                                enabledThumbRadius: 8,
+                              ),
+                              overlayShape: const RoundSliderOverlayShape(
+                                overlayRadius: 16,
+                              ),
+                              activeTrackColor: Colors.blue[400],
+                              inactiveTrackColor: Colors.grey[700],
+                              thumbColor: Colors.blue[400],
+                              overlayColor: Colors.blue.withValues(alpha: 0.2),
+                            ),
+                            child: Slider(
+                              value: symptom.duration.toDouble(),
+                              min: 0,
+                              max: 24,
+                              divisions: 24,
+                              label: symptom.duration == 0
+                                  ? l10n.durationTitle
+                                  : l10n.hours(symptom.duration),
+                              onChanged: (value) {
+                                _updateSymptomDuration(index, value.round());
+                              },
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        SizedBox(
+                          width: 60,
+                          child: Text(
+                            symptom.duration == 0
+                                ? '-'
+                                : l10n.hours(symptom.duration),
+                            style: TextStyle(
+                              color: Colors.blue[300],
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ],
         ],
       ),
     );
@@ -636,6 +824,10 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
                   const SizedBox(height: 24),
                   _buildSymptomsChart(l10n),
                   const SizedBox(height: 24),
+                  _buildSymptomSeverityChart(l10n),
+                  const SizedBox(height: 24),
+                  _buildSymptomDurationChart(l10n),
+                  const SizedBox(height: 24),
                   _buildActivitiesChart(l10n),
                   const SizedBox(height: 24),
                   _buildEntriesList(l10n),
@@ -821,7 +1013,7 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
     final symptomCounts = <String, int>{};
     for (final entry in _entries) {
       for (final symptom in entry.symptoms) {
-        symptomCounts[symptom] = (symptomCounts[symptom] ?? 0) + 1;
+        symptomCounts[symptom.name] = (symptomCounts[symptom.name] ?? 0) + 1;
       }
     }
 
@@ -940,6 +1132,376 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
                 ),
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSymptomSeverityChart(AppLocalizations l10n) {
+    final sortedEntries = List<EnergyEntry>.from(_entries)
+      ..sort((a, b) => a.date.compareTo(b.date));
+
+    final last7Days = sortedEntries.take(7).toList();
+
+    final symptomData = <String, List<double>>{};
+    for (final entry in last7Days) {
+      for (final symptom in entry.symptoms) {
+        symptomData.putIfAbsent(symptom.name, () => []);
+        symptomData[symptom.name]!.add(symptom.severity.toDouble());
+      }
+    }
+
+    if (symptomData.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final topSymptoms = symptomData.entries.toList()
+      ..sort((a, b) => b.value.length.compareTo(a.value.length));
+    final displaySymptoms = topSymptoms.take(3).toList();
+
+    return Card(
+      color: const Color(0xFF1F2937),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.symptomSeverityChartTitle,
+              style: TextStyle(
+                color: Colors.grey[100],
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 200,
+              child: LineChart(
+                LineChartData(
+                  gridData: FlGridData(
+                    show: true,
+                    drawVerticalLine: false,
+                    horizontalInterval: 2,
+                    getDrawingHorizontalLine: (value) =>
+                        FlLine(color: Colors.grey[800], strokeWidth: 1),
+                  ),
+                  titlesData: FlTitlesData(
+                    show: true,
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: (value, meta) {
+                          if (value.toInt() >= 0 &&
+                              value.toInt() < last7Days.length) {
+                            final date = last7Days[value.toInt()].date;
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                '${date.day}/${date.month}',
+                                style: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontSize: 10,
+                                ),
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                        reservedSize: 30,
+                      ),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        interval: 2,
+                        getTitlesWidget: (value, meta) {
+                          if (value >= 1 && value <= 10) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Text(
+                                value.toInt().toString(),
+                                style: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontSize: 12,
+                                ),
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                        reservedSize: 30,
+                      ),
+                    ),
+                  ),
+                  borderData: FlBorderData(
+                    show: true,
+                    border: Border.all(color: Colors.grey[800]!),
+                  ),
+                  minX: 0,
+                  maxX: (last7Days.length - 1).toDouble().clamp(
+                    0,
+                    double.infinity,
+                  ),
+                  minY: 0,
+                  maxY: 11,
+                  lineBarsData: [
+                    for (var i = 0; i < displaySymptoms.length; i++)
+                      LineChartBarData(
+                        spots: [
+                          for (var j = 0; j < last7Days.length; j++)
+                            FlSpot(
+                              j.toDouble(),
+                              displaySymptoms[i].value.length > j
+                                  ? displaySymptoms[i].value[j]
+                                  : 0,
+                            ),
+                        ],
+                        isCurved: true,
+                        color: [Colors.red, Colors.orange, Colors.amber][i],
+                        barWidth: 2.5,
+                        isStrokeCapRound: true,
+                        dotData: FlDotData(
+                          show: true,
+                          getDotPainter: (spot, percent, barData, index) =>
+                              FlDotCirclePainter(
+                                radius: 3,
+                                color: [
+                                  Colors.red,
+                                  Colors.orange,
+                                  Colors.amber,
+                                ][i],
+                                strokeWidth: 0,
+                              ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            if (displaySymptoms.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 12,
+                children: displaySymptoms.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final symptomName = entry.value.key;
+                  return Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: [
+                            Colors.red,
+                            Colors.orange,
+                            Colors.amber,
+                          ][index],
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        symptomName,
+                        style: TextStyle(color: Colors.grey[300], fontSize: 12),
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSymptomDurationChart(AppLocalizations l10n) {
+    final sortedEntries = List<EnergyEntry>.from(_entries)
+      ..sort((a, b) => a.date.compareTo(b.date));
+
+    final last7Days = sortedEntries.take(7).toList();
+
+    final symptomData = <String, List<double>>{};
+    for (final entry in last7Days) {
+      for (final symptom in entry.symptoms) {
+        symptomData.putIfAbsent(symptom.name, () => []);
+        symptomData[symptom.name]!.add(symptom.duration.toDouble());
+      }
+    }
+
+    if (symptomData.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final topSymptoms = symptomData.entries.toList()
+      ..sort((a, b) => b.value.length.compareTo(a.value.length));
+    final displaySymptoms = topSymptoms.take(3).toList();
+
+    return Card(
+      color: const Color(0xFF1F2937),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.symptomDurationChartTitle,
+              style: TextStyle(
+                color: Colors.grey[100],
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 200,
+              child: LineChart(
+                LineChartData(
+                  gridData: FlGridData(
+                    show: true,
+                    drawVerticalLine: false,
+                    horizontalInterval: 4,
+                    getDrawingHorizontalLine: (value) =>
+                        FlLine(color: Colors.grey[800], strokeWidth: 1),
+                  ),
+                  titlesData: FlTitlesData(
+                    show: true,
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: (value, meta) {
+                          if (value.toInt() >= 0 &&
+                              value.toInt() < last7Days.length) {
+                            final date = last7Days[value.toInt()].date;
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                '${date.day}/${date.month}',
+                                style: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontSize: 10,
+                                ),
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                        reservedSize: 30,
+                      ),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        interval: 4,
+                        getTitlesWidget: (value, meta) {
+                          if (value >= 0 &&
+                              value <= 24 &&
+                              value.toInt() % 4 == 0) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Text(
+                                '${value.toInt()}h',
+                                style: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontSize: 12,
+                                ),
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                        reservedSize: 30,
+                      ),
+                    ),
+                  ),
+                  borderData: FlBorderData(
+                    show: true,
+                    border: Border.all(color: Colors.grey[800]!),
+                  ),
+                  minX: 0,
+                  maxX: (last7Days.length - 1).toDouble().clamp(
+                    0,
+                    double.infinity,
+                  ),
+                  minY: 0,
+                  maxY: 24,
+                  lineBarsData: [
+                    for (var i = 0; i < displaySymptoms.length; i++)
+                      LineChartBarData(
+                        spots: [
+                          for (var j = 0; j < last7Days.length; j++)
+                            FlSpot(
+                              j.toDouble(),
+                              displaySymptoms[i].value.length > j
+                                  ? displaySymptoms[i].value[j]
+                                  : 0,
+                            ),
+                        ],
+                        isCurved: true,
+                        color: [Colors.blue, Colors.cyan, Colors.teal][i],
+                        barWidth: 2.5,
+                        isStrokeCapRound: true,
+                        dotData: FlDotData(
+                          show: true,
+                          getDotPainter: (spot, percent, barData, index) =>
+                              FlDotCirclePainter(
+                                radius: 3,
+                                color: [
+                                  Colors.blue,
+                                  Colors.cyan,
+                                  Colors.teal,
+                                ][i],
+                                strokeWidth: 0,
+                              ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            if (displaySymptoms.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 12,
+                children: displaySymptoms.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final symptomName = entry.value.key;
+                  return Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: [Colors.blue, Colors.cyan, Colors.teal][index],
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        symptomName,
+                        style: TextStyle(color: Colors.grey[300], fontSize: 12),
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
+            ],
           ],
         ),
       ),
@@ -1167,12 +1729,40 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
                                   color: Colors.red.withValues(alpha: 0.5),
                                 ),
                               ),
-                              child: Text(
-                                symptom,
-                                style: TextStyle(
-                                  color: Colors.red[300],
-                                  fontSize: 12,
-                                ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    symptom.name,
+                                    style: TextStyle(
+                                      color: Colors.red[300],
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  if (symptom.severity > 0) ...[
+                                    const SizedBox(width: 4),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 4,
+                                        vertical: 1,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red.withValues(
+                                          alpha: 0.3,
+                                        ),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        '${symptom.severity}',
+                                        style: TextStyle(
+                                          color: Colors.red[200],
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ],
                               ),
                             ),
                           )

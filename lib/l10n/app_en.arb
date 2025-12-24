@@ -55,5 +55,15 @@
   "close": "Close",
   "cancel": "Cancel",
   "reshowDisclaimer": "Reshow disclaimer",
-  "reshowDisclaimerSubtitle": "Show the disclaimer on next launch"
+  "reshowDisclaimerSubtitle": "Show the disclaimer on next launch",
+  "severityTitle": "Severity",
+  "severityDescription": "How intense is this symptom?",
+  "durationTitle": "Duration",
+  "durationDescription": "How long did it last?",
+  "hours": "{count}h",
+  "severity1": "Very mild",
+  "severity5": "Moderate",
+  "severity10": "Very severe",
+  "symptomSeverityChartTitle": "Symptom severity over time",
+  "symptomDurationChartTitle": "Symptom duration over time"
 }

@@ -177,4 +177,36 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get reshowDisclaimerSubtitle => 'Toon de disclaimer bij de volgende start';
+
+  @override
+  String get severityTitle => 'Ernst';
+
+  @override
+  String get severityDescription => 'Hoe hevig is dit symptoom?';
+
+  @override
+  String get durationTitle => 'Duur';
+
+  @override
+  String get durationDescription => 'Hoe lang duurde het?';
+
+  @override
+  String hours(Object count) {
+    return '${count}u';
+  }
+
+  @override
+  String get severity1 => 'Zeer mild';
+
+  @override
+  String get severity5 => 'Matig';
+
+  @override
+  String get severity10 => 'Zeer ernstig';
+
+  @override
+  String get symptomSeverityChartTitle => 'Ernst van symptomen over tijd';
+
+  @override
+  String get symptomDurationChartTitle => 'Duur van symptomen over tijd';
 }

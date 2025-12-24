@@ -430,6 +430,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show the disclaimer on next launch'**
   String get reshowDisclaimerSubtitle;
+
+  /// No description provided for @severityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Severity'**
+  String get severityTitle;
+
+  /// No description provided for @severityDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'How intense is this symptom?'**
+  String get severityDescription;
+
+  /// No description provided for @durationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get durationTitle;
+
+  /// No description provided for @durationDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'How long did it last?'**
+  String get durationDescription;
+
+  /// No description provided for @hours.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}h'**
+  String hours(Object count);
+
+  /// No description provided for @severity1.
+  ///
+  /// In en, this message translates to:
+  /// **'Very mild'**
+  String get severity1;
+
+  /// No description provided for @severity5.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderate'**
+  String get severity5;
+
+  /// No description provided for @severity10.
+  ///
+  /// In en, this message translates to:
+  /// **'Very severe'**
+  String get severity10;
+
+  /// No description provided for @symptomSeverityChartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Symptom severity over time'**
+  String get symptomSeverityChartTitle;
+
+  /// No description provided for @symptomDurationChartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Symptom duration over time'**
+  String get symptomDurationChartTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

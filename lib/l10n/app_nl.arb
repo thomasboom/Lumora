@@ -55,5 +55,15 @@
   "close": "Sluiten",
   "cancel": "Annuleren",
   "reshowDisclaimer": "Disclaimer opnieuw tonen",
-  "reshowDisclaimerSubtitle": "Toon de disclaimer bij de volgende start"
+  "reshowDisclaimerSubtitle": "Toon de disclaimer bij de volgende start",
+  "severityTitle": "Ernst",
+  "severityDescription": "Hoe hevig is dit symptoom?",
+  "durationTitle": "Duur",
+  "durationDescription": "Hoe lang duurde het?",
+  "hours": "{count}u",
+  "severity1": "Zeer mild",
+  "severity5": "Matig",
+  "severity10": "Zeer ernstig",
+  "symptomSeverityChartTitle": "Ernst van symptomen over tijd",
+  "symptomDurationChartTitle": "Duur van symptomen over tijd"
 }
