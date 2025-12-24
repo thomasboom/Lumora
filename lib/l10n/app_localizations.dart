@@ -340,6 +340,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add new entry'**
   String get fabAddEntry;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @dataSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Data'**
+  String get dataSection;
+
+  /// No description provided for @deleteAllDataTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all data'**
+  String get deleteAllDataTitle;
+
+  /// No description provided for @deleteAllDataSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This will permanently remove all your entries'**
+  String get deleteAllDataSubtitle;
+
+  /// No description provided for @deleteAllDataConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete all your data? This action cannot be undone.'**
+  String get deleteAllDataConfirmation;
+
+  /// No description provided for @dataDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'All data has been deleted'**
+  String get dataDeleted;
+
+  /// No description provided for @appSection.
+  ///
+  /// In en, this message translates to:
+  /// **'App'**
+  String get appSection;
+
+  /// No description provided for @aboutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get aboutTitle;
+
+  /// No description provided for @appName.
+  ///
+  /// In en, this message translates to:
+  /// **'Lumora'**
+  String get appName;
+
+  /// No description provided for @version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get version;
+
+  /// No description provided for @build.
+  ///
+  /// In en, this message translates to:
+  /// **'Build'**
+  String get build;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @reshowDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Reshow disclaimer'**
+  String get reshowDisclaimer;
+
+  /// No description provided for @reshowDisclaimerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the disclaimer on next launch'**
+  String get reshowDisclaimerSubtitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

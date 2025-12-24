@@ -40,5 +40,20 @@
   "symptomChestPain": "pijn op de borst",
   "symptomMuscleWeakness": "spierzwakte",
   "symptomJointPain": "gewrichtspijn",
-  "fabAddEntry": "Nieuwe vermelding"
+  "fabAddEntry": "Nieuwe vermelding",
+  "settingsTitle": "Instellingen",
+  "dataSection": "Gegevens",
+  "deleteAllDataTitle": "Alle gegevens verwijderen",
+  "deleteAllDataSubtitle": "Hiermee worden al je vermeldingen permanent verwijderd",
+  "deleteAllDataConfirmation": "Weet je zeker dat je al je gegevens wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+  "dataDeleted": "Alle gegevens zijn verwijderd",
+  "appSection": "App",
+  "aboutTitle": "Over",
+  "appName": "Lumora",
+  "version": "Versie",
+  "build": "Bouw",
+  "close": "Sluiten",
+  "cancel": "Annuleren",
+  "reshowDisclaimer": "Disclaimer opnieuw tonen",
+  "reshowDisclaimerSubtitle": "Toon de disclaimer bij de volgende start"
 }

@@ -35,4 +35,9 @@ class StorageService {
     );
     await prefs.setString(_entriesKey, entriesJson);
   }
+
+  Future<void> clearAllData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_entriesKey);
+  }
 }

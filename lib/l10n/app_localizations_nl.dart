@@ -132,4 +132,49 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get fabAddEntry => 'Nieuwe vermelding';
+
+  @override
+  String get settingsTitle => 'Instellingen';
+
+  @override
+  String get dataSection => 'Gegevens';
+
+  @override
+  String get deleteAllDataTitle => 'Alle gegevens verwijderen';
+
+  @override
+  String get deleteAllDataSubtitle => 'Hiermee worden al je vermeldingen permanent verwijderd';
+
+  @override
+  String get deleteAllDataConfirmation => 'Weet je zeker dat je al je gegevens wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.';
+
+  @override
+  String get dataDeleted => 'Alle gegevens zijn verwijderd';
+
+  @override
+  String get appSection => 'App';
+
+  @override
+  String get aboutTitle => 'Over';
+
+  @override
+  String get appName => 'Lumora';
+
+  @override
+  String get version => 'Versie';
+
+  @override
+  String get build => 'Bouw';
+
+  @override
+  String get close => 'Sluiten';
+
+  @override
+  String get cancel => 'Annuleren';
+
+  @override
+  String get reshowDisclaimer => 'Disclaimer opnieuw tonen';
+
+  @override
+  String get reshowDisclaimerSubtitle => 'Toon de disclaimer bij de volgende start';
 }

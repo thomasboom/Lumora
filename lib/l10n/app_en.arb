@@ -40,5 +40,20 @@
   "symptomChestPain": "chest pain",
   "symptomMuscleWeakness": "muscle weakness",
   "symptomJointPain": "joint pain",
-  "fabAddEntry": "Add new entry"
+  "fabAddEntry": "Add new entry",
+  "settingsTitle": "Settings",
+  "dataSection": "Data",
+  "deleteAllDataTitle": "Delete all data",
+  "deleteAllDataSubtitle": "This will permanently remove all your entries",
+  "deleteAllDataConfirmation": "Are you sure you want to delete all your data? This action cannot be undone.",
+  "dataDeleted": "All data has been deleted",
+  "appSection": "App",
+  "aboutTitle": "About",
+  "appName": "Lumora",
+  "version": "Version",
+  "build": "Build",
+  "close": "Close",
+  "cancel": "Cancel",
+  "reshowDisclaimer": "Reshow disclaimer",
+  "reshowDisclaimerSubtitle": "Show the disclaimer on next launch"
 }

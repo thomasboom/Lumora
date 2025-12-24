@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:lumora/l10n/app_localizations.dart';
 import '../models/energy_entry.dart';
 import '../services/storage_service.dart';
+import 'settings_screen.dart';
 
 class EnergyTrackerScreen extends StatefulWidget {
   const EnergyTrackerScreen({super.key});
@@ -146,20 +147,6 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
       }
     }
     return uniqueActivities.toList()..sort();
-  }
-
-  String _getStepTitle(int step) {
-    final l10n = AppLocalizations.of(context)!;
-    switch (step) {
-      case 0:
-        return l10n.energyTitle;
-      case 1:
-        return l10n.activitiesTitle;
-      case 2:
-        return l10n.symptomsTitle;
-      default:
-        return '';
-    }
   }
 
   Widget _buildStepContent(AppLocalizations l10n) {
@@ -618,6 +605,20 @@ class _EnergyTrackerScreenState extends State<EnergyTrackerScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
+              if (result == true && mounted) {
+                await _loadEntries();
+              }
+            },
+          ),
+        ],
       ),
       body: _entries.isEmpty
           ? Center(

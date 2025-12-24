@@ -132,4 +132,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fabAddEntry => 'Add new entry';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get dataSection => 'Data';
+
+  @override
+  String get deleteAllDataTitle => 'Delete all data';
+
+  @override
+  String get deleteAllDataSubtitle => 'This will permanently remove all your entries';
+
+  @override
+  String get deleteAllDataConfirmation => 'Are you sure you want to delete all your data? This action cannot be undone.';
+
+  @override
+  String get dataDeleted => 'All data has been deleted';
+
+  @override
+  String get appSection => 'App';
+
+  @override
+  String get aboutTitle => 'About';
+
+  @override
+  String get appName => 'Lumora';
+
+  @override
+  String get version => 'Version';
+
+  @override
+  String get build => 'Build';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get reshowDisclaimer => 'Reshow disclaimer';
+
+  @override
+  String get reshowDisclaimerSubtitle => 'Show the disclaimer on next launch';
 }
